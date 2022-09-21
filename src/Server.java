@@ -10,17 +10,14 @@ public class Server {
         int port = 5346;
         System.out.println("Server started!");
         while(true) {
-            ServerSocket serverSocket = new ServerSocket(port);
+            try (ServerSocket serverSocket = new ServerSocket(port);
             Socket clientSocket = serverSocket.accept();
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            System.out.println("New connection accepted");
-            final String name = in.readLine();
-            out.println(String.format("Hi %s, your port is %d", name, clientSocket.getPort()));
-            clientSocket.close();
-            serverSocket.close();
-            out.close();
-            in.close();
+            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
+                System.out.println("New connection accepted");
+                final String name = in.readLine();
+                out.println(String.format("Hi %s, your port is %d", name, clientSocket.getPort()));
+            }
         }
     }
 }
